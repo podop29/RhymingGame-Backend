@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1658465642795" clover="3.2.0">
+  <project timestamp="1658465642795" name="All files">
+    <metrics statements="63" coveredstatements="63" conditionals="20" coveredconditionals="18" methods="15" coveredmethods="15" elements="98" coveredelements="96" complexity="0" loc="63" ncloc="63" packages="1" files="2" classes="2"/>
+    <file name="_testCommon.js" path="/home/stevan/springBoard/RhymingGame/backend/models/_testCommon.js">
+      <metrics statements="11" coveredstatements="11" conditionals="0" coveredconditionals="0" methods="4" coveredmethods="4"/>
+      <line num="1" count="1" type="stmt"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="6" count="1" type="stmt"/>
+      <line num="11" count="1" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="15" count="1" type="stmt"/>
+      <line num="46" count="21" type="stmt"/>
+      <line num="50" count="21" type="stmt"/>
+      <line num="54" count="1" type="stmt"/>
+      <line num="58" count="1" type="stmt"/>
+    </file>
+    <file name="user.js" path="/home/stevan/springBoard/RhymingGame/backend/models/user.js">
+      <metrics statements="52" coveredstatements="52" conditionals="20" coveredconditionals="18" methods="11" coveredmethods="11"/>
+      <line num="3" count="1" type="stmt"/>
+      <line num="4" count="1" type="stmt"/>
+      <line num="5" count="1" type="stmt"/>
+      <line num="10" count="1" type="stmt"/>
+      <line num="12" count="1" type="stmt"/>
+      <line num="26" count="3" type="stmt"/>
+      <line num="36" count="3" type="stmt"/>
+      <line num="38" count="3" type="cond" truecount="2" falsecount="0"/>
+      <line num="40" count="1" type="stmt"/>
+      <line num="41" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="42" count="1" type="stmt"/>
+      <line num="43" count="1" type="stmt"/>
+      <line num="47" count="2" type="stmt"/>
+      <line num="59" count="4" type="stmt"/>
+      <line num="66" count="4" type="cond" truecount="2" falsecount="0"/>
+      <line num="67" count="1" type="stmt"/>
+      <line num="70" count="3" type="stmt"/>
+      <line num="72" count="3" type="stmt"/>
+      <line num="88" count="3" type="stmt"/>
+      <line num="90" count="3" type="stmt"/>
+      <line num="99" count="8" type="stmt"/>
+      <line num="113" count="8" type="stmt"/>
+      <line num="125" count="4" type="stmt"/>
+      <line num="140" count="4" type="stmt"/>
+      <line num="142" count="4" type="cond" truecount="2" falsecount="0"/>
+      <line num="144" count="2" type="stmt"/>
+      <line num="148" count="1" type="stmt"/>
+      <line num="163" count="1" type="stmt"/>
+      <line num="165" count="1" type="cond" truecount="1" falsecount="1"/>
+      <line num="167" count="1" type="stmt"/>
+      <line num="174" count="2" type="stmt"/>
+      <line num="181" count="2" type="stmt"/>
+      <line num="183" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="188" count="8" type="cond" truecount="2" falsecount="0"/>
+      <line num="190" count="7" type="stmt"/>
+      <line num="194" count="7" type="cond" truecount="2" falsecount="0"/>
+      <line num="195" count="1" type="stmt"/>
+      <line num="198" count="6" type="stmt"/>
+      <line num="208" count="6" type="stmt"/>
+      <line num="216" count="6" type="stmt"/>
+      <line num="222" count="6" type="cond" truecount="2" falsecount="0"/>
+      <line num="223" count="4" type="stmt"/>
+      <line num="225" count="2" type="stmt"/>
+      <line num="233" count="2" type="stmt"/>
+      <line num="245" count="2" type="stmt"/>
+      <line num="250" count="2" type="stmt"/>
+      <line num="255" count="2" type="stmt"/>
+      <line num="263" count="2" type="stmt"/>
+      <line num="269" count="2" type="cond" truecount="2" falsecount="0"/>
+      <line num="270" count="1" type="stmt"/>
+      <line num="272" count="1" type="stmt"/>
+      <line num="286" count="1" type="stmt"/>
+    </file>
+  </project>
+</coverage>

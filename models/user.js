@@ -1,0 +1,285 @@
+"use strict";
+
+const db = require("../db");
+const bcrypt = require("bcrypt");
+const { sqlForPartialUpdate } = require("../helpers/sql.js");
+const {
+  NotFoundError,
+  BadRequestError,
+  UnauthorizedError,
+} = require("../helpers/expressError");
+
+const { BCRYPT_WORK_FACTOR } = require("../config.js");
+
+/** Related functions for users. */
+
+class User {
+  /** authenticate user with username, password.
+   *
+   * Returns { username, first_name, last_name, email, is_admin }
+   *
+   * Throws UnauthorizedError is user not found or wrong password.
+   **/
+
+  static async authenticate(username, password) {
+    // try to find the user first
+    const result = await db.query(
+          `SELECT username,
+                  email,
+                  password,
+                  is_admin AS "isAdmin"
+           FROM users
+           WHERE username = $1`,
+        [username],
+    );
+
+    const user = result.rows[0];
+
+    if (user) {
+      // compare hashed password to a new hash from password
+      const isValid = await bcrypt.compare(password, user.password);
+      if (isValid === true) {
+        delete user.password;
+        return user;
+      }
+    }
+
+    throw new UnauthorizedError("Invalid username/password");
+  }
+
+  /** Register user with data.
+   *
+   * Returns { username, firstName, lastName, email, isAdmin }
+   *
+   * Throws BadRequestError on duplicates.
+   **/
+
+  static async register(
+      { username, password,email, isAdmin }) {
+    const duplicateCheck = await db.query(
+          `SELECT username
+           FROM users
+           WHERE username = $1`,
+        [username],
+    );
+
+    if (duplicateCheck.rows[0]) {
+      throw new BadRequestError(`Duplicate username: ${username}`);
+    }
+
+    const hashedPassword = await bcrypt.hash(password, BCRYPT_WORK_FACTOR);
+
+    const result = await db.query(
+          `INSERT INTO users
+           (username,
+            password,
+            email,
+            is_admin)
+           VALUES ($1, $2, $3, $4)
+           RETURNING username, email, is_admin AS "isAdmin"`,
+        [
+          username,
+          hashedPassword,
+          email,
+          isAdmin,
+        ],
+    );
+
+    const user = result.rows[0];
+
+    return user;
+  }
+
+  /** Find all users.
+   *
+   * Returns [{ username, first_name, last_name, email, is_admin }, ...]
+   **/
+
+  static async findAll() {
+    const result = await db.query(
+          `SELECT userId,
+           username,
+            email,
+            is_admin AS "isAdmin",
+            high_score,
+            level,
+            exp,
+            games_played
+
+           FROM users
+           ORDER BY username`,
+    );
+
+    return result.rows;
+  }
+
+  /** Given a username, return data about user.
+   *
+   * Returns { username, first_name, last_name, is_admin, jobs }
+   *   where jobs is { id, title, company_handle, company_name, state }
+   *
+   * Throws NotFoundError if user not found.
+   **/
+
+  static async get(username) {
+    const userRes = await db.query(
+          `SELECT userId,
+                  username,
+                  email,
+                  is_admin AS "isAdmin",
+                  high_score,
+                  level,
+                  exp,
+                  games_played
+
+           FROM users
+           WHERE username = $1`,
+        [username],
+    );
+
+    const user = userRes.rows[0];
+
+    if (!user) throw new NotFoundError(`No user: ${username}`);
+
+    return user;
+  }
+
+  static async getById(id) {
+    const userRes = await db.query(
+          `SELECT userId,
+                  username,
+                  email,
+                  is_admin AS "isAdmin",
+                  high_score,
+                  level,
+                  exp,
+                  games_played
+
+           FROM users
+           WHERE userId = $1`,
+        [id],
+    );
+
+    const user = userRes.rows[0];
+
+    if (!user) throw new NotFoundError(`No user`);
+
+    return user;
+  }
+
+  
+  /** Delete given user from database; returns undefined. */
+
+  static async remove(username) {
+    let result = await db.query(
+          `DELETE
+           FROM users
+           WHERE username = $1
+           RETURNING username`,
+        [username],
+    );
+    const user = result.rows[0];
+
+    if (!user) throw new NotFoundError(`No user: ${username}`);
+  }
+
+  //**Send a friend request 
+  static async sendFriendRequest(user1, user2){
+    if(user1 == user2) throw new BadRequestError(`Cant be friends with yourself`);
+    //Dup check
+    let duplicateCheck = await db.query(
+      `SELECT * FROM user_friends
+      where user1_id = $1 AND user2_id = $2 `,[user1,user2]
+    )
+    if (duplicateCheck.rows[0]) {
+      throw new BadRequestError(`Request already sent`);
+    }
+
+    let results = await db.query(
+      `INSERT INTO user_friends
+      (
+        user1_id,
+        user2_id
+      )
+      VALUES ($1, $2)
+      RETURNING user1_id, user2_id
+      `,[user1, user2]
+    )
+    return results.rows[0]
+
+  }
+
+  //** See Friend Requests */
+  //Returns a list of pending friend requests
+  static async seeFriendRequest(userId){
+    //Selects all requests where userId is receiver and request is pending
+    let results = await db.query(
+      `SELECT *
+      from user_friends
+      where user2_id = $1 AND accepted = false
+      `,[userId]
+    )
+    if(results.rows[0]){
+      return results.rows
+    }else{
+      throw new NotFoundError(`No requests found`);
+    }
+  } 
+
+
+  //**See friends list */
+  //Returns list of users that are friends with userId passed in
+  static async seeFriendsList(userId){
+    let results = await db.query(
+      `SELECT username,
+              email,
+              high_score,
+              level,
+              games_played
+       FROM users u
+      JOIN user_friends f ON (f.user1_id = u.userId OR f.user2_id = u.userId)
+      WHERE u.userId = f.user2_id AND f.user1_id  = $1 AND accepted = true
+      OR  u.userId = f.user1_id AND f.user2_id  = $1 AND accepted = true
+      
+      `, [userId]) 
+      return results.rows
+  }
+
+  //**Accept friend request */
+  static async acceptRequest(reqId){
+      let results = await db.query(
+        `UPDATE user_friends
+        SET accepted = $1
+        WHERE id = $2`,[true, reqId]
+      )
+      return results.rows[0];
+
+  }
+
+  //Delete friend request when declined
+  //Returns Undefined*/
+  static async deleteRequest(reqId){
+    let results = await db.query(
+      `DELETE
+      FROM user_friends
+      WHERE id = $1
+      RETURNING *`,[reqId]
+    )
+    if(results.rows[0]){
+      return ("Request Deleted")
+    }else{
+      throw new NotFoundError(`No requests found`);
+    }
+  }
+
+
+  //Remove Friend
+
+
+ 
+}
+
+
+
+
+module.exports = User;
