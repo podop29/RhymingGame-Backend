@@ -120,20 +120,22 @@ describe("findAll", function () {
         userid: ids[0],
         email: "test@test.com",
         isAdmin: false,
-        high_score: 21421,
-        level: 3,
-        exp: 533,
-        games_played:21
+        high_score: 0,
+        level: 0,
+        exp: 0,
+        games_played:0,
+        img_url: null
       },
       {
         username: "u2",
         userid: ids[1],
         email: "testAdmin@test.com",
         isAdmin: true,
-        high_score: 21421,
-        level: 3,
-        exp: 533,
-        games_played:21
+        high_score: 0,
+        level: 0,
+        exp: 0,
+        games_played:0,
+        img_url: null
       },
     ]);
   });
@@ -149,10 +151,11 @@ describe("get", function () {
         userid: user.userid,
         email: "test@test.com",
         isAdmin: false,
-        high_score: 21421,
-        level: 3,
-        exp: 533,
-        games_played:21
+        high_score: 0,
+        level: 0,
+        exp: 0,
+        games_played:0,
+        img_url: null
     });
   });
 
@@ -177,10 +180,11 @@ describe("getById", function () {
         userid: user.userid,
         email: "test@test.com",
         isAdmin: false,
-        high_score: 21421,
-        level: 3,
-        exp: 533,
-        games_played:21
+        high_score: 0,
+        level: 0,
+        exp: 0,
+        games_played:0,
+        img_url: null
     });
   });
 
@@ -296,17 +300,17 @@ describe("See friends list",function (){
     expect(list[0]).toEqual({
         username: 'u1',
         email: 'test@test.com',
-        high_score: 21421,
-        level: 3,
-        games_played: 21
+        high_score: 0,
+        level: 0,
+        games_played: 0
     })
     list = await User.seeFriendsList(users[0].userid)
     expect(list[0]).toEqual({
         username: 'u2',
         email: 'testAdmin@test.com',
-        high_score: 21421,
-        level: 3,
-        games_played: 21
+        high_score: 0,
+        level: 0,
+        games_played: 0
     })
   })
 })
@@ -340,4 +344,49 @@ describe("delete friend request",function (){
 
   })
 })
+
+
+//*************************Test adding xp and levels */
+
+describe("Adding levels and xp",function (){
+  test("Works", async function(){
+    let user = await User.get("u1");
+    expect(user.level).toEqual(0)
+    expect(user.exp).toEqual(0)
+
+    await User.addExp("u1", 101)
+    user = await User.get("u1");
+    expect(user.level).toEqual(1)
+    expect(user.exp).toEqual(1)
+
+    await User.addExp("u1", 110)
+    user = await User.get("u1");
+    expect(user.level).toEqual(2)
+    expect(user.exp).toEqual(0)
  
+  })
+})
+
+
+//***************Testing changing highscore and gamesplay */
+
+describe("testing highscore and games played updater",function (){
+  test("Works", async function(){
+    let user = await User.get("u1");
+    expect(user.high_score).toEqual(0)
+    expect(user.games_played).toEqual(0)
+
+    await User.updateLvlAndGameCount("u1", 200)
+    user = await User.get("u1");
+    expect(user.high_score).toEqual(200)
+    expect(user.games_played).toEqual(1)
+
+    await User.updateLvlAndGameCount("u1", 150)
+    user = await User.get("u1");
+    expect(user.high_score).toEqual(200)
+    expect(user.games_played).toEqual(2)
+
+    
+ 
+  })
+})

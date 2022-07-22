@@ -104,7 +104,8 @@ class User {
             high_score,
             level,
             exp,
-            games_played
+            games_played,
+            img_url
 
            FROM users
            ORDER BY username`,
@@ -130,7 +131,8 @@ class User {
                   high_score,
                   level,
                   exp,
-                  games_played
+                  games_played,
+                  img_url
 
            FROM users
            WHERE username = $1`,
@@ -153,7 +155,8 @@ class User {
                   high_score,
                   level,
                   exp,
-                  games_played
+                  games_played,
+                  img_url
 
            FROM users
            WHERE userId = $1`,
@@ -250,13 +253,19 @@ class User {
       let results = await db.query(
         `UPDATE user_friends
         SET accepted = $1
-        WHERE id = $2`,[true, reqId]
+        WHERE id = $2
+        returning *`,[true, reqId]
       )
-      return results.rows[0];
+      if(results.rows[0]){
+      return (`Friend request accepted`)
+      }else{
+      throw new NotFoundError(`No requests found`); 
+      }
 
   }
 
   //Delete friend request when declined
+  // Is also used to delete a friend
   //Returns Undefined*/
   static async deleteRequest(reqId){
     let results = await db.query(
@@ -272,14 +281,67 @@ class User {
     }
   }
 
-
-  //Remove Friend
-
-
+  //TODO LIST
  
+  //Update highscore
+
+  //System for leveling up and gaining xp
+  //Returns updated user
+  static async addExp(username, exp){
+    let user = await User.get(username);
+    if(!user) return ("User not found")
+    //get current level and exp
+    let userLvl = user.level;
+    let userExp = user.exp + parseInt(exp);
+    //If exp is above (100 * 1.2) * lvl
+    //Then level up and do xp - (100 * 1.2) * lvl
+    let factor = parseFloat(`1.${userLvl}`);
+    let MAX_EXP_FOR_LEVEL = (100 * factor)
+    while(userExp > MAX_EXP_FOR_LEVEL){
+      userLvl++;
+      userExp = Math.floor(userExp - MAX_EXP_FOR_LEVEL)
+      factor = parseFloat(`1.${userLvl}`)
+      MAX_EXP_FOR_LEVEL = (100 * factor)
+    }
+    //Update the users level and exp
+    await db.query(
+        `Update users
+        SET
+        level = $1,
+        exp = $2
+        WHERE username = $3
+        `,[userLvl, userExp, username]
+    )
+    return await User.get(username)
+  }
+
+
+   //add 1 to games played count
+   //returns nothing
+ static async updateLvlAndGameCount(username,score){
+      const user = await User.get(username);
+      if(score > user.high_score){
+        await db.query(`Update users
+        SET
+        high_score = $1,
+        games_played = $2
+        WHERE username = $3
+        `,[score, user.games_played + 1, username])
+      }else{
+        await db.query(`Update users
+        SET
+        games_played = $1
+        WHERE username = $2
+        `,[user.games_played + 1, username])
+
+      }
+    return await User.get(username)
+
+
+ }
+
+
 }
-
-
 
 
 module.exports = User;

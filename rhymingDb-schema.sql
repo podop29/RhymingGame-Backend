@@ -7,7 +7,8 @@ CREATE TABLE users (
     level integer Default 0,
     exp integer  Default 0,
     games_played integer Default 0,
-    is_admin boolean Default FALSE
+    is_admin boolean Default FALSE,
+    img_url text
 );
 
 

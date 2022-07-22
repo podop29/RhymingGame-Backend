@@ -183,6 +183,29 @@ router.get("/:username", ensureLoggedIn, async function (req, res, next) {
       return next(e)
     }
   })
+
+
+
+  //**Routes for adding EXP and LEVELING up */
+  router.patch('/update/exp/:username/:expAmt', ensureCorrectUserOrAdmin, async function(req,res,next){
+    try{
+      const request = await User.addExp(req.params.username, req.params.expAmt)
+      return res.json({request})
+    }catch(e){
+      return next(e);
+    }
+  })
+
+  //**Routes for  updating game count and highscore*/
+  router.patch('/update/:username/:score', ensureCorrectUserOrAdmin, async function(req,res,next){
+    try{
+      const request = await User.updateLvlAndGameCount(req.params.username, parseInt(req.params.score))
+      return res.json({request})
+    }catch(e){
+      return next(e);
+    }
+  })
+
   
 
   module.exports = router;

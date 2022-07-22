@@ -18,20 +18,21 @@ async function commonBeforeAll() {
       'u1',
       'test@test.com',
       $1,
-      21421,
-      3,
-      533,
-      21,
+      0,
+      0,
+      0,
+      0,
       FALSE
+      
   ),
   (
       'u2',
       'testAdmin@test.com',
       $2,
-      21421,
-      3,
-      533,
-      21,
+      0,
+      0,
+      0,
+      0,
       TRUE
   
   );`,
