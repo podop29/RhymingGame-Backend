@@ -6,7 +6,7 @@
       "username": {
         "type": "string",
         "minLength": 4,
-        "maxLength": 30
+        "maxLength": 12
       },
       "password": {
         "type": "string",

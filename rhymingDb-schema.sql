@@ -19,3 +19,13 @@ CREATE TABLE user_friends(
     accepted boolean Default FALSE,
     friends_since timestamp without time zone DEFAULT NOW()
 );
+
+CREATE TABLE games(
+    id Serial Primary Key,
+    user1_id integer Not Null REFERENCES users,
+    user2_id integer Not Null REFERENCES users,
+    accepted boolean Default FALSE,
+    user1_score integer,
+    user2_score integer,
+    round_num integer
+)

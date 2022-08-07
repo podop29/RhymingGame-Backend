@@ -217,15 +217,20 @@ class User {
   static async seeFriendRequest(userId){
     //Selects all requests where userId is receiver and request is pending
     let results = await db.query(
-      `SELECT *
-      from user_friends
-      where user2_id = $1 AND accepted = false
+      `SELECT id,
+              user1_id,
+              user2_id
+              accepted,
+              friends_since,
+              username
+      from user_friends f join users u on (f.user1_id = u.userid)
+      where f.user2_id = $1 AND f.accepted = false
       `,[userId]
     )
     if(results.rows[0]){
       return results.rows
     }else{
-      throw new NotFoundError(`No requests found`);
+      return [];
     }
   } 
 
@@ -238,7 +243,9 @@ class User {
               email,
               high_score,
               level,
-              games_played
+              games_played,
+              img_url,
+              id
        FROM users u
       JOIN user_friends f ON (f.user1_id = u.userId OR f.user2_id = u.userId)
       WHERE u.userId = f.user2_id AND f.user1_id  = $1 AND accepted = true
@@ -261,8 +268,8 @@ class User {
       }else{
       throw new NotFoundError(`No requests found`); 
       }
-
   }
+
 
   //Delete friend request when declined
   // Is also used to delete a friend
