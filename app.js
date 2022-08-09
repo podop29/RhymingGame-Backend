@@ -15,11 +15,14 @@ app.use(authenticateJWT);
 //const authRoutes = require('./routes/auth');
 const userRoutes = require('./routes/users');
 const authRouters = require('./routes/auth')
+const gameRoutes = require('./routes/game')
 
 
 //app.use('/auth', authRoutes);
 app.use('/users', userRoutes);
 app.use('/auth', authRouters);
+app.use('/game', gameRoutes);
+
 
 
 

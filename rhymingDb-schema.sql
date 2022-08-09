@@ -7,6 +7,7 @@ CREATE TABLE users (
     level integer Default 0,
     exp integer  Default 0,
     games_played integer Default 0,
+    games_won integer Default 0,
     is_admin boolean Default FALSE,
     img_url text
 );
@@ -25,7 +26,7 @@ CREATE TABLE games(
     user1_id integer Not Null REFERENCES users,
     user2_id integer Not Null REFERENCES users,
     accepted boolean Default FALSE,
-    user1_score integer,
-    user2_score integer,
-    round_num integer
+    user1_score integer Default 0,
+    user2_score integer Default 0,
+    round_num integer Default 1
 )

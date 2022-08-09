@@ -5,6 +5,8 @@
 \c rhymingDb 
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS user_friends CASCADE;
+DROP TABLE IF EXISTS games CASCADE;
+
 
 \i rhymingDb-schema.sql
 \i rhymingDb-seed.sql
@@ -15,5 +17,7 @@ DROP TABLE IF EXISTS user_friends CASCADE;
 \c rhymingDb_test
 DROP TABLE IF EXISTS users CASCADE;
 DROP TABLE IF EXISTS user_friends CASCADE;
+DROP TABLE IF EXISTS games CASCADE;
+
 
 \i rhymingDb-schema.sql

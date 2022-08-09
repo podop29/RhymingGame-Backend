@@ -2,7 +2,6 @@
 
 const db = require("../db");
 const bcrypt = require("bcrypt");
-const { sqlForPartialUpdate } = require("../helpers/sql.js");
 const {
   NotFoundError,
   BadRequestError,
@@ -245,7 +244,8 @@ class User {
               level,
               games_played,
               img_url,
-              id
+              id,
+              userid
        FROM users u
       JOIN user_friends f ON (f.user1_id = u.userId OR f.user2_id = u.userId)
       WHERE u.userId = f.user2_id AND f.user1_id  = $1 AND accepted = true
@@ -288,9 +288,6 @@ class User {
     }
   }
 
-  //TODO LIST
- 
-  //Update highscore
 
   //System for leveling up and gaining xp
   //Returns updated user
