@@ -206,6 +206,16 @@ router.get("/:username", ensureLoggedIn, async function (req, res, next) {
     }
   })
 
+   //**Routes for  updating user_url*/
+   router.patch('/update/url/:userId/:img_url', ensureCorrectUserOrAdmin, async function(req,res,next){
+    try{
+      const request = await User.updateUserUrl(req.params.img_url,req.params.userId)
+      return res.json({request})
+    }catch(e){
+      return next(e);
+    }
+  })
+
   
 
   module.exports = router;

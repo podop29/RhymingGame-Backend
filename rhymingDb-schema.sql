@@ -28,5 +28,6 @@ CREATE TABLE games(
     accepted boolean Default FALSE,
     user1_score integer Default 0,
     user2_score integer Default 0,
-    round_num integer Default 1
+    round_num integer Default 1,
+    game_over boolean Default FALSE
 )

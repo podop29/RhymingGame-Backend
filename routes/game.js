@@ -34,6 +34,28 @@ const router = express.Router();
     }
   })
 
+  //get game by id
+  router.get("/request/game/:gameId", ensureLoggedIn, async function(req,res,next){
+    try{
+      const requests = await Game.getGame(req.params.gameId)
+      return res.json({requests})
+
+    }catch(err){
+      return next(err)
+    }
+  })
+
+  //get game finished games by uuserid
+  router.get("/request/finished/:userId", ensureLoggedIn, async function(req,res,next){
+    try{
+      const requests = await Game.getAllFinishedGames(req.params.userId)
+      return res.json({requests})
+
+    }catch(err){
+      return next(err)
+    }
+  })
+
   /**Accept game request */
   router.post("/request/:reqId", ensureLoggedIn, async function(req,res,next){
     try{

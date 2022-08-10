@@ -233,6 +233,19 @@ class User {
     }
   } 
 
+  //**Update userUrl */
+  static async updateUserUrl(url, userId){
+       const res = await db.query(`
+        UPDATE users
+        set
+        img_url = $1
+        WHERE userid = $2
+    `,[url,userId])
+
+    return res.rows[0]
+
+  }
+
 
   //**See friends list */
   //Returns list of users that are friends with userId passed in
