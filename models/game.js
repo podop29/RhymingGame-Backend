@@ -99,7 +99,7 @@ class Game {
       FROM games g
       join users as u1 on (g.user1_id = u1.userid)
       join users as u2 on (g.user2_id = u2.userid)
-      WHERE user1_id = $1 or user2_id = $1 and game_over = $2
+      WHERE user1_id = $1 and game_over = $2 or user2_id = $1 and game_over = $2
       ORDER BY id desc LIMIT 10
    `,[playerId,true])
   return res.rows
