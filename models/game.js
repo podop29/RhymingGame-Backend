@@ -82,7 +82,7 @@ class Game {
             return res.rows[0]
   }
 
-  //Gets all finished games for a player
+  //Gets recent 10 finished games for a player
   static async getAllFinishedGames(playerId){
       let res = await db.query(`
       SELECT 
@@ -100,6 +100,7 @@ class Game {
       join users as u1 on (g.user1_id = u1.userid)
       join users as u2 on (g.user2_id = u2.userid)
       WHERE user1_id = $1 or user2_id = $1 and game_over = True
+      ORDER BY id desc LIMIT 10
    `,[playerId])
   return res.rows
 

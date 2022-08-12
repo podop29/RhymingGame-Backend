@@ -14,7 +14,6 @@ const {
     commonAfterEach,
     commonAfterAll,
   } = require("./_testCommon.js");
-const { seeFriendRequest } = require("./user.js");
   
 
 beforeAll(commonBeforeAll);
@@ -263,7 +262,8 @@ describe("See Friend Requests",function (){
 			"user1_id": users[0].userid,
 			"user2_id": users[1].userid,
 			"accepted": false,
-			"friends_since": results[0].friends_since
+			"friends_since": results[0].friends_since,
+      "username": "u1"
     }])
   })
 })
@@ -278,13 +278,9 @@ describe("accept Friend Requests",function (){
     expect(request.length).toEqual(1)
 
     //Accept the Request
-    try{
+    
       await User.acceptRequest(request[0].id)
       await User.seeFriendRequest(users[1].userid)
-      fail();
-    }catch(e){
-      expect(e instanceof NotFoundError).toBeTruthy()
-    }
   })
 })
 
@@ -298,17 +294,24 @@ describe("See friends list",function (){
     //See for user 1
     let list = await User.seeFriendsList(users[1].userid)
     expect(list[0]).toEqual({
+        id: list[0].id,
         username: 'u1',
         email: 'test@test.com',
         high_score: 0,
+        img_url: null,
+        userid:list[0].userid,
         level: 0,
         games_played: 0
     })
     list = await User.seeFriendsList(users[0].userid)
     expect(list[0]).toEqual({
+        id: list[0].id,
         username: 'u2',
         email: 'testAdmin@test.com',
         high_score: 0,
+        img_url: null,
+        userid:list[0].userid,
+
         level: 0,
         games_played: 0
     })
@@ -324,24 +327,13 @@ describe("delete friend request",function (){
     let request = await User.seeFriendRequest(users[1].userid)
     expect(request.length).toEqual(1);
 
-    try{
+      
       User.deleteRequest(request[0].id)
-    await User.seeFriendRequest(users[1].userid)
-    fail()
-    }catch(e){
-      expect(e instanceof NotFoundError).toBeTruthy()
-    }
+      const list = await User.seeFriendRequest(users[1].userid)
+      expect(list.length).toEqual(0)
+
     
-  })
-
-  test("no request found", async function(){
-    try{
-      await User.deleteRequest(1)
-    fail()
-    }catch(e){
-      expect(e instanceof NotFoundError).toBeTruthy()
-    }
-
+    
   })
 })
 

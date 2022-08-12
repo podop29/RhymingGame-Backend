@@ -218,7 +218,7 @@ class User {
     let results = await db.query(
       `SELECT id,
               user1_id,
-              user2_id
+              user2_id,
               accepted,
               friends_since,
               username

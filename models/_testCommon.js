@@ -1,4 +1,7 @@
 const bcrypt = require("bcrypt");
+const User = require("./user.js");
+const Game = require("./game.js");
+
 
 const db = require("../db.js");
 const { BCRYPT_WORK_FACTOR } = require("../config");
@@ -10,6 +13,10 @@ async function commonBeforeAll() {
   // noinspection SqlWithoutWhere
   await db.query("DELETE FROM users");
   await db.query("DELETE FROM user_friends");
+  await db.query("DELETE FROM games");
+
+
+  
 
 
   await db.query(`
@@ -40,6 +47,17 @@ async function commonBeforeAll() {
         await bcrypt.hash("password1", BCRYPT_WORK_FACTOR),
         await bcrypt.hash("password2", BCRYPT_WORK_FACTOR),
       ]);
+
+      const users = await User.findAll();
+      const id1 = users[0].userid;
+      const id2 = users[1].userid;
+
+      await db.query(`
+      INSERT INTO games(user1_id, user2_id)
+      VALUES(
+        $1,
+        $2
+      )`,[id1,id2])
 
 }
 
