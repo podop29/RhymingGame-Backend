@@ -145,6 +145,7 @@ class User {
     return user;
   }
 
+  //Gets user from user id
   static async getById(id) {
     const userRes = await db.query(
           `SELECT userId,

@@ -4,7 +4,6 @@ const db = require("../db");
 const {
   NotFoundError,
   BadRequestError,
-  UnauthorizedError,
 } = require("../helpers/expressError");
 const user = require("./user")
 
@@ -148,7 +147,7 @@ static async acceptRequest(reqId){
     let user1 = game.username1
     let user2 = game.username2
 
-
+    //If round is not even, update user 1, else update user 2
     if(round % 2 !== 1){
          prevScore = game.user1_score
             results = await db.query(
